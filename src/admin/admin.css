@@ -1,0 +1,18 @@
+form .field {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 10px;
+}
+
+form .field img {
+	width: 30px;
+	aspect-ratio: 1/1;
+}
+
+form .field input {
+	width: 100%;
+	border: solid 1px oklch(87.2% 0.01 258.338);
+	border-radius: 5px;
+	padding: 0.25rem;
+}
