@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+@theme {
+	--color-primary-blue: #01afea;
+}
+
+.container {
+	@apply container px-8 mx-auto;
+}

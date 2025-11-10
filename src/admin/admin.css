@@ -16,3 +16,15 @@ form .field input {
 	border-radius: 5px;
 	padding: 0.25rem;
 }
+
+/* Icon color filters */
+.icon-primary-blue {
+	filter: brightness(0) saturate(100%) invert(68%) sepia(94%) saturate(1352%)
+		hue-rotate(158deg) brightness(96%) contrast(96%);
+}
+
+.icon-gray {
+	filter: brightness(0) saturate(100%) invert(40%) sepia(8%) saturate(314%)
+		hue-rotate(182deg) brightness(94%) contrast(86%);
+	opacity: 0.6;
+}
