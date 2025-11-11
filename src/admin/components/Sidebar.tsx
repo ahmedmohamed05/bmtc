@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import ACTIONS from "../actions";
+import STATS from "../actions";
 
 export default function Sidebar() {
 	const location = useLocation();
@@ -13,15 +13,15 @@ export default function Sidebar() {
 	return (
 		<aside className="w-64 bg-white shadow-lg min-h-screen">
 			<div className="p-4">
-				<h2 className="text-xl font-bold text-gray-800 mb-6">Admin Menu</h2>
+				<h2 className="text-xl font-bold text-gray-800 mb-6">قائمة الادارة</h2>
 				<nav>
 					<ul className="space-y-2">
-						{ACTIONS.map((action) => {
-							const active = isActive(action.link);
+						{STATS.map((stat) => {
+							const active = isActive(stat.link);
 							return (
-								<li key={action.link}>
+								<li key={stat.link}>
 									<Link
-										to={action.link}
+										to={stat.link}
 										className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
 											active
 												? "bg-primary-blue/10 text-primary-blue border-l-4 border-primary-blue"
@@ -29,14 +29,14 @@ export default function Sidebar() {
 										}`}>
 										<div className="w-6 h-6 flex items-center justify-center shrink-0">
 											<img
-												src={action.icon}
-												alt={action.name}
+												src={stat.icon}
+												alt={stat.name}
 												className={`w-6 h-6 object-contain ${
 													active ? "icon-primary-blue" : "icon-gray"
 												}`}
 											/>
 										</div>
-										<span className="text-sm font-medium">{action.name}</span>
+										<span className="text-sm font-medium">{stat.name}</span>
 									</Link>
 								</li>
 							);

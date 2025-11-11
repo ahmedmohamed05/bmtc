@@ -3,11 +3,11 @@ import { supabase } from "../../shared/supabase";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 
-export default function AdminLayout({
-	children,
-}: {
+export interface AdminLayoutProps {
 	children: React.ReactNode;
-}) {
+}
+
+export default function AdminLayout({ children }: AdminLayoutProps) {
 	const navigate = useNavigate();
 	const [adminEmail, setAdminEmail] = useState<string | undefined>(undefined);
 
@@ -48,7 +48,7 @@ export default function AdminLayout({
 					</div>
 				</div>
 			</nav>
-			<div className="flex shadow">
+			<div className="flex">
 				<Sidebar />
 				<main className="flex-1">{children}</main>
 			</div>
