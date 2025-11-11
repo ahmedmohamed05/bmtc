@@ -23,7 +23,43 @@ Run the following SQL in your Supabase SQL Editor to create the required tables:
 
 ### 1. News Table
 
-More tables here
+```sql
+create table news (
+  id UUID primary key default gen_random_uuid (),
+  admin_id UUID not null references auth.users (id) on delete RESTRICT,
+  updated_by UUID references auth.users (id) on delete set null,
+  title TEXT not null,
+  body TEXT not null,
+  thumbnail_url TEXT,
+  created_at TIMESTAMPTZ default NOW(),
+  updated_at TIMESTAMPTZ default NOW()
+);
+
+-- Enable Row Level Security
+ALTER TABLE public.news ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Anyone can view news (public read access)
+create policy "Anyone can view news" on public.news for
+select using (true);
+
+-- Policy: Only authenticated admins can insert news
+CREATE POLICY "Admins can create news"
+  ON news
+  FOR INSERT
+  WITH CHECK (auth.role() = 'authenticated');
+
+-- Policy: Only authenticated admins can update news
+CREATE POLICY "Admins can update news"
+  ON news
+  FOR UPDATE
+  USING (auth.role() = 'authenticated');
+
+-- Policy: Only authenticated admins can delete news
+CREATE POLICY "Admins can delete news"
+  ON news
+  FOR DELETE
+  USING (auth.role() = 'authenticated');
+```
 
 **Note:** For production, you should enable RLS and create proper policies that allow:
 
