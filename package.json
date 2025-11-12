@@ -12,6 +12,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.80.0",
     "@tailwindcss/vite": "^4.1.17",
+    "browser-image-compression": "^2.0.2",
     "crypto-js": "^4.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
