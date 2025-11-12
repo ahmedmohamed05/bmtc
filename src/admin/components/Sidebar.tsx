@@ -1,8 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import STATS from "../actions";
+import { useState } from "react";
+import { TbLayoutSidebarRightCollapseFilled } from "react-icons/tb";
 
 export default function Sidebar() {
 	const location = useLocation();
+	const [isCollapsed, setIsCollapsed] = useState(false);
 
 	const isActive = (link: string) => {
 		return (
@@ -10,24 +13,38 @@ export default function Sidebar() {
 		);
 	};
 
+	const asideClass = `bg-white shadow-lg min-h-screen transition-all duration-300 ease-in-out `;
+	const spanClass = `text-sm font-medium mr-4 ${isCollapsed && "hidden"}`;
+
 	return (
-		<aside className="w-64 bg-white shadow-lg min-h-screen">
-			<div className="p-4">
-				<h2 className="text-xl font-bold text-gray-800 mb-6">قائمة الادارة</h2>
+		<aside className={asideClass}>
+			<div className="px-4 py-2">
+				<button
+					className={`flex items-center px-2 transition-colors mb-4 cursor-pointer bg-gray-100 w-full py-4 rounded-lg`}
+					onClick={() => setIsCollapsed(!isCollapsed)}>
+					<TbLayoutSidebarRightCollapseFilled
+						size={24}
+						className={isCollapsed ? `rotate-180` : ""}
+					/>
+
+					{!isCollapsed && <span className={spanClass}>اخفاء القائمة</span>}
+				</button>
 				<nav>
-					<ul className="space-y-2">
+					<ul className="py-2">
 						{STATS.map((stat) => {
 							const active = isActive(stat.link);
 							return (
 								<li key={stat.link}>
 									<Link
 										to={stat.link}
-										className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+										title={stat.name}
+										className={`flex items-center py-3 px-2 my-1 rounded-lg transition-colors
+                    ${
 											active
 												? "bg-primary-blue/10 text-primary-blue border-l-4 border-primary-blue"
 												: "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
 										}`}>
-										<div className="w-6 h-6 flex items-center justify-center shrink-0">
+										<div className="flex items-center justify-center">
 											<img
 												src={stat.icon}
 												alt={stat.name}
@@ -36,7 +53,7 @@ export default function Sidebar() {
 												}`}
 											/>
 										</div>
-										<span className="text-sm font-medium">{stat.name}</span>
+										<span className={spanClass}>{stat.name}</span>
 									</Link>
 								</li>
 							);
@@ -47,25 +64,3 @@ export default function Sidebar() {
 		</aside>
 	);
 }
-
-// <Link
-// key={stat.name}
-// to={stat.link}
-// className="bg-white overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow">
-// <div className="p-5">
-//   <div className="flex items-center">
-//     <div className={`${stat.color} p-3 rounded-md`}></div>
-//     <div className="ml-5 w-0 flex-1">
-//       <dl>
-//         <dt className="text-sm font-medium text-gray-500 truncate">
-//           {stat.name}
-//         </dt>
-//         <dd className="text-lg font-semibold text-gray-900">
-//           {/* {stat.count} */}
-//           count
-//         </dd>
-//       </dl>
-//     </div>
-//   </div>
-// </div>
-// </Link>
