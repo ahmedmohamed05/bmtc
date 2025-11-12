@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { UUID } from "../types";
+import imageCompression from "browser-image-compression";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
@@ -15,12 +16,21 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export type Buckets = "news-thumbnails";
 
 export const uploadImg = async (file: File, fromFolder: Buckets) => {
+	// Compress image before upload
+	const options = {
+		maxSizeMB: 0.5, // Compress to max 500KB
+		maxWidthOrHeight: 1920, // Max dimension
+		useWebWorker: true,
+	};
+
+	const compressedFile = await imageCompression(file, options);
+
 	// We need to define a unique filepath for the image first
-	const filepath = `${Date.now()}-${file.name}`;
+	const filepath = `${Date.now()}-${compressedFile.name}`;
 
 	const { error } = await supabase.storage
 		.from(fromFolder)
-		.upload(filepath, file);
+		.upload(filepath, compressedFile);
 
 	if (error) throw error;
 
@@ -188,6 +198,35 @@ export const insertNews = async (news: AddNews) => {
 			updated_at: created_at,
 		},
 	]);
+
+	if (insertError) throw insertError;
+};
+
+export type UpdateNews = Omit<
+	News,
+	"created_at" | "updated_at" | "admin_id" | "updated_by"
+>;
+
+export const updateNews = async (news: UpdateNews) => {
+	const { id, title, body, thumbnail_url } = news;
+
+	const updated_at = new Date().toISOString();
+	const updated_by = (await supabase.auth.getUser()).data.user?.id;
+
+	if (updated_by === undefined)
+		throw new Error("خطأ اثناء سحب بيانات المستخدم الحالي");
+
+	const { error: insertError } = await supabase
+		.from("news")
+		.update({
+			updated_by,
+			title,
+			body,
+			thumbnail_url,
+			updated_at,
+		})
+		.eq("id", id)
+		.single();
 
 	if (insertError) throw insertError;
 };

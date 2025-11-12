@@ -43,8 +43,8 @@ export default function NewsPage() {
 	};
 
 	const handleEdit = (item: News) => {
-		// setEditingNews(item);
-		// setShowForm(true);
+		setEditingNews(item);
+		setShowForm(true);
 		console.log(item);
 	};
 

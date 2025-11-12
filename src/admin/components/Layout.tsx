@@ -32,7 +32,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
 	return (
 		<div className="min-h-screen bg-gray-100">
-			<nav className="bg-white shadow sticky top-0 z-50">
+			<nav className="bg-white shadow">
 				<div className="container mx-auto">
 					<div className="flex justify-between h-16">
 						<div className="flex items-center">
