@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, type News } from "../../shared/supabase";
+import { deleteNews, getAllNews, type News } from "../../shared/supabase";
 import NewsForm from "../components/NewsForm";
 import { FiEdit, FiTrash2, FiPlus } from "react-icons/fi";
 import type { UUID } from "../../types";
@@ -16,12 +16,7 @@ export default function NewsPage() {
 
 	const fetchNews = async () => {
 		try {
-			const { data, error } = await supabase
-				.from("news")
-				.select("*")
-				.order("created_at", { ascending: false });
-			if (error) throw error;
-			setNews(data || []);
+			setNews((await getAllNews()) || []);
 		} catch (error) {
 			console.error("خطأ اثناء جلب الأخبار", error);
 		} finally {
@@ -30,27 +25,25 @@ export default function NewsPage() {
 	};
 
 	const handleDelete = async (id: UUID) => {
-		// if (!confirm("Are you sure you want to delete this news article?")) return;
-		// try {
-		// 	const { error } = await supabase.from("news").delete().eq("id", id);
-		// 	if (error) throw error;
-		// 	fetchNews();
-		// } catch (error) {
-		// 	console.error("Error deleting news:", error);
-		// 	alert("Failed to delete news article");
-		// }
-		console.log(id);
+		if (!confirm("هل انت متأكد من انك تريد حذف هذا الخبر؟")) return;
+
+		try {
+			await deleteNews(id);
+			await fetchNews();
+		} catch (error) {
+			console.error("خطأ اثناء المسح: ", error);
+			alert("خطأ اثناء مسح الخبر");
+		}
 	};
 
 	const handleEdit = (item: News) => {
 		setEditingNews(item);
 		setShowForm(true);
-		console.log(item);
 	};
 
 	const handleFormSuccess = () => {
-		// setShowForm(false);
-		// setEditingNews(undefined);
+		setShowForm(false);
+		setEditingNews(undefined);
 		fetchNews();
 	};
 
@@ -64,8 +57,8 @@ export default function NewsPage() {
 	}
 
 	return (
-		<div className="px-4 py-6 sm:px-0">
-			<div className="container">
+		<div className="py-6">
+			<div className="px-4">
 				<div className="flex justify-between items-center mb-6">
 					<h1 className="text-3xl font-bold text-gray-900">أدارة الأخبار</h1>
 					{!showForm && (

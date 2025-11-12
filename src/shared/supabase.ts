@@ -172,7 +172,19 @@ export interface Exam extends BaseEnttity {
 	year: number;
 }
 
+// TODO create hooks for each table
 // Helper Functions and types
+
+export const getAllNews = async () => {
+	const { data, error } = await supabase
+		.from("news")
+		.select("*")
+		.order("created_at", { ascending: false });
+
+	if (error) throw error;
+
+	return data as News[];
+};
 
 export type AddNews = Omit<
 	News,
@@ -229,4 +241,9 @@ export const updateNews = async (news: UpdateNews) => {
 		.single();
 
 	if (insertError) throw insertError;
+};
+
+export const deleteNews = async (id: UUID) => {
+	const { error } = await supabase.from("news").delete().eq("id", id);
+	if (error) throw error;
 };

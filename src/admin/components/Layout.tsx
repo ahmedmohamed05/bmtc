@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../shared/supabase";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
+import Navbar from "./Navbar";
 
 export interface AdminLayoutProps {
 	children: React.ReactNode;
@@ -9,7 +10,7 @@ export interface AdminLayoutProps {
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
 	const navigate = useNavigate();
-	const [adminEmail, setAdminEmail] = useState<string | undefined>(undefined);
+	const [adminEmail, setAdminEmail] = useState<string>("");
 
 	// Get the email of the current admin
 	useEffect(() => {
@@ -19,7 +20,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 				navigate("/admin/auth");
 				return;
 			}
-			setAdminEmail(data.user.email);
+			setAdminEmail(data.user.email!);
 		};
 
 		fetchAdminEmail();
@@ -32,25 +33,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
 	return (
 		<div className="min-h-screen bg-gray-100">
-			<nav className="bg-white shadow">
-				<div className="container mx-auto">
-					<div className="flex justify-between h-16">
-						<div className="flex items-center">
-							<h1 className="text-xl font-bold text-gray-800">{adminEmail}</h1>
-						</div>
-						<div className="flex items-center">
-							<button
-								onClick={handleLogout}
-								className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer">
-								تسجيل خروج
-							</button>
-						</div>
-					</div>
-				</div>
-			</nav>
+			<Navbar email={adminEmail} logoutHandler={handleLogout} />
 			<div className="flex">
 				<Sidebar />
-				<main className="flex-1">{children}</main>
+				<main className="flex-1 transition-all duration-300">{children}</main>
 			</div>
 		</div>
 	);
