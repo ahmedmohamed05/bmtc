@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import type { UUID } from "../types";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
@@ -11,9 +12,25 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+export type Buckets = "news-thumbnails";
+
+export const uploadImg = async (file: File, fromFolder: Buckets) => {
+	// We need to define a unique filepath for the image first
+	const filepath = `${Date.now()}-${file.name}`;
+
+	const { error } = await supabase.storage
+		.from(fromFolder)
+		.upload(filepath, file);
+
+	if (error) throw error;
+
+	const { data } = supabase.storage.from(fromFolder).getPublicUrl(filepath);
+
+	return data.publicUrl;
+};
+
 // TODO Database types
 
-type UUID = string; // Create a branded type
 type StudyType = "morning" | "evening";
 
 // TODO amdin inteface
@@ -26,7 +43,7 @@ export interface AdminLoginLogs {
 }
 
 interface BaseEnttity {
-	id: number;
+	id: UUID;
 	admin_id: UUID; // FK
 	updated_by: UUID | null; // FK
 	created_at: string;
@@ -36,7 +53,7 @@ interface BaseEnttity {
 export interface News extends BaseEnttity {
 	title: string;
 	body: string;
-	thumbnail_url: string;
+	thumbnail_url: string | null;
 }
 
 export interface Event extends BaseEnttity {
@@ -108,6 +125,7 @@ export interface LetterAndThese extends BaseEnttity {
 	english_title: string;
 	year: number;
 }
+
 export interface GraduatedStudent extends BaseEnttity {
 	department_id: number; // Fk reference departments table
 	year: number;
@@ -143,3 +161,33 @@ export interface Exam extends BaseEnttity {
 	stage: 1 | 2 | 3 | 4;
 	year: number;
 }
+
+// Helper Functions and types
+
+export type AddNews = Omit<
+	News,
+	"id" | "created_at" | "updated_at" | "admin_id" | "updated_by"
+>;
+
+export const insertNews = async (news: AddNews) => {
+	const { title, body, thumbnail_url } = news;
+
+	const created_at = new Date().toISOString();
+	const admin_id = (await supabase.auth.getUser()).data.user?.id;
+	if (admin_id === undefined)
+		throw new Error("خطأ اثناء سحب بيانات المستخدم الحالي");
+
+	const { error: insertError } = await supabase.from("news").insert([
+		{
+			admin_id,
+			updated_by: admin_id,
+			title,
+			body,
+			thumbnail_url,
+			created_at,
+			updated_at: created_at,
+		},
+	]);
+
+	if (insertError) throw insertError;
+};
