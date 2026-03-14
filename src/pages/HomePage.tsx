@@ -185,7 +185,7 @@ export default function HomePage() {
 												position: "absolute",
 												inset: 0,
 												background:
-													"linear-gradient(to top, rgba(1,100,170,0.92) 0%, rgba(1,140,200,0.3) 60%, transparent 100%)",
+													"linear-gradient(to top, rgba(7, 131, 219, 0.15) 0%, rgba(1,140,200,0.20) 60%, transparent 100%)",
 											}}
 										/>
 										<p
@@ -271,7 +271,8 @@ export default function HomePage() {
 												position: "absolute",
 												inset: 0,
 												background:
-													"linear-gradient(to top, rgba(1,100,170,0.92) 0%, rgba(1,140,200,0.3) 60%, transparent 100%)",
+													"linear-gradient(to top, rgba(7, 131, 219, 0.15) 0%, rgba(1,140,200,0.20) 60%, transparent 100%)",
+									
 											}}
 										/>
 										<p
