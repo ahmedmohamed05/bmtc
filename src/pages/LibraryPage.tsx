@@ -1,10 +1,10 @@
-import EventCard from "../components/EventCard";
+import BookCard from "../components/BookCard";
 import { Loader, ErrorState } from "../components/Loader";
-import { useEvents } from "../hooks/useEvents";
+import { useLibrary } from "../hooks/useLibrary";
 
-export default function EventsPage() {
-	const { events, loading, loadingMore, error, hasMore, total, loadMore } =
-		useEvents();
+export default function LibraryPage() {
+	const { books, loading, loadingMore, error, hasMore, total, loadMore } =
+		useLibrary();
 
 	return (
 		<main style={{ flex: 1, background: "var(--bg)", padding: "2rem 1.5rem" }}>
@@ -17,7 +17,7 @@ export default function EventsPage() {
 							color: "var(--blue)",
 							letterSpacing: "0.5px",
 						}}>
-						الفعاليات
+						المكتبة
 					</h1>
 					<div
 						style={{
@@ -35,33 +35,33 @@ export default function EventsPage() {
 								fontSize: "0.82rem",
 								color: "var(--text-muted)",
 							}}>
-							إجمالي الفعاليات: {total}
+							إجمالي الكتب: {total}
 						</p>
 					)}
 				</div>
 
 				{loading && <Loader />}
-				{error && <ErrorState message="تعذّر تحميل الفعاليات" />}
-				{!loading && !error && events.length === 0 && (
+				{error && <ErrorState message="تعذّر تحميل الكتب" />}
+				{!loading && !error && books.length === 0 && (
 					<p
 						style={{
 							textAlign: "center",
 							color: "var(--text-muted)",
 							padding: "3rem",
 						}}>
-						لا توجد فعاليات حالياً.
+						لا توجد كتب حالياً.
 					</p>
 				)}
 
-				{events.length > 0 && (
+				{books.length > 0 && (
 					<div
 						style={{
 							display: "grid",
-							gridTemplateColumns: "repeat(auto-fill, minmax(270px, 1fr))",
+							gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
 							gap: "1.25rem",
 						}}>
-						{events.map((item) => (
-							<EventCard key={item.id} item={item} />
+						{books.map((item) => (
+							<BookCard key={item.id} item={item} />
 						))}
 					</div>
 				)}

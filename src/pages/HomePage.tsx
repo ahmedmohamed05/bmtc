@@ -95,17 +95,18 @@ export default function HomePage() {
 							style={{
 								fontSize: "clamp(1.3rem, 3vw, 1.7rem)",
 								fontWeight: 800,
-								color: "var(--text)",
+								color: "var(--blue)",
+								letterSpacing: "0.5px",
 							}}>
 							لماذا تختار كليتنا ؟
 						</h2>
 						<div
 							style={{
-								height: 3,
-								width: 56,
-								background: "var(--gold)",
+								height: 4,
+								width: 60,
+								background: "linear-gradient(90deg, var(--blue), var(--gold))",
 								borderRadius: 2,
-								margin: "0.5rem auto 0.75rem",
+								margin: "0.75rem auto 0.75rem",
 							}}
 						/>
 						<p style={{ fontSize: "0.88rem", color: "var(--text-muted)" }}>
@@ -322,17 +323,18 @@ export default function HomePage() {
 								style={{
 									fontSize: "1.4rem",
 									fontWeight: 800,
-									color: "var(--text)",
+									color: "var(--blue)",
+									letterSpacing: "0.5px",
 								}}>
 								الأخبـار
 							</h2>
 							<div
 								style={{
-									height: 3,
-									width: 44,
-									background: "var(--gold)",
+									height: 4,
+									width: 50,
+									background: "linear-gradient(90deg, var(--blue), var(--gold))",
 									borderRadius: 2,
-									marginTop: 5,
+									marginTop: 6,
 								}}
 							/>
 						</div>

@@ -8,6 +8,9 @@ import NewsDetailPage from './pages/NewsDetailPage'
 import AboutPage from './pages/AboutPage'
 import EventsPage from './pages/EventsPage'
 import EventDetailPage from './pages/EventDetailPage'
+import DepartmentsPage from './pages/DepartmentsPage'
+import LibraryPage from './pages/LibraryPage'
+import LibraryDetailPage from './pages/LibraryDetailPage'
 import './config/env'
 
 function App() {
@@ -20,7 +23,10 @@ function App() {
         <Route path='/news/:id' element={<NewsDetailPage />} />
         <Route path='/events' element={<EventsPage />} />
         <Route path='/events/:id' element={<EventDetailPage />} />
+        <Route path='/library' element={<LibraryPage />} />
+        <Route path='/library/:id' element={<LibraryDetailPage />} />
         <Route path='/about' element={<AboutPage />} />
+        <Route path="/departments" element={<DepartmentsPage />} />
       </Routes>
       <Footer />
     </BrowserRouter>

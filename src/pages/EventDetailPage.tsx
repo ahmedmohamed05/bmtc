@@ -168,11 +168,11 @@ export default function EventDetailPage() {
             <div style={{ padding: '1.75rem 2rem' }}>
               <div
                 style={{
-                  height: 3,
-                  width: 40,
-                  background: 'var(--gold)',
-                  borderRadius: 1,
-                  marginBottom: '1rem',
+                  height: 4,
+                  width: 50,
+                  background: 'linear-gradient(90deg, var(--blue), var(--gold))',
+                  borderRadius: 2,
+                  marginBottom: '1.25rem',
                 }}
               />
 

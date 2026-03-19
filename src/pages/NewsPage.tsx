@@ -15,17 +15,18 @@ export default function NewsPage() {
 						style={{
 							fontSize: "1.5rem",
 							fontWeight: 800,
-							color: "var(--text)",
+							color: "var(--blue)",
+							letterSpacing: "0.5px",
 						}}>
 						الأخبار
 					</h1>
 					<div
 						style={{
-							height: 3,
-							width: 44,
-							background: "var(--gold)",
+							height: 4,
+							width: 50,
+							background: "linear-gradient(90deg, var(--blue), var(--gold))",
 							borderRadius: 2,
-							marginTop: 5,
+							marginTop: 8,
 						}}
 					/>
 					{total > 0 && (
@@ -72,27 +73,28 @@ export default function NewsPage() {
 							onClick={loadMore}
 							disabled={loadingMore}
 							style={{
-								padding: "0.6rem 2rem",
-								borderRadius: 6,
-								border: "1.5px solid var(--blue)",
-								background: "transparent",
-								color: "var(--blue)",
+								padding: "0.75rem 2.5rem",
+								borderRadius: 8,
+								border: "none",
+								background: "linear-gradient(135deg, var(--blue), #0056d4)",
+								color: "#fff",
 								fontFamily: "inherit",
 								fontWeight: 700,
-								fontSize: "0.9rem",
+								fontSize: "0.95rem",
 								cursor: loadingMore ? "not-allowed" : "pointer",
-								opacity: loadingMore ? 0.6 : 1,
-								transition: "background 0.15s, color 0.15s",
+								opacity: loadingMore ? 0.65 : 1,
+								transition: "all 0.25s ease",
+								boxShadow: "0 4px 12px rgba(0, 86, 217, 0.2)",
 							}}
 							onMouseEnter={(e) => {
 								if (!loadingMore) {
-									e.currentTarget.style.background = "var(--blue)";
-									e.currentTarget.style.color = "#fff";
+									e.currentTarget.style.transform = "translateY(-2px)";
+									e.currentTarget.style.boxShadow = "0 6px 20px rgba(0, 86, 217, 0.35)";
 								}
 							}}
 							onMouseLeave={(e) => {
-								e.currentTarget.style.background = "transparent";
-								e.currentTarget.style.color = "var(--blue)";
+								e.currentTarget.style.transform = "translateY(0)";
+								e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 86, 217, 0.2)";
 							}}>
 							{loadingMore ? "جارٍ التحميل..." : "تحميل المزيد"}
 						</button>

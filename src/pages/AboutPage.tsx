@@ -59,9 +59,9 @@ export default function AboutPage() {
 				</h1>
 				<div
 					style={{
-						height: 3,
-						width: 44,
-						background: "var(--gold)",
+						height: 4,
+						width: 50,
+						background: "linear-gradient(90deg, var(--gold), rgba(255,255,255,0.4))",
 						borderRadius: 2,
 						margin: "0.75rem auto 0",
 					}}

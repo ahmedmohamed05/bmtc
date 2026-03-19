@@ -6,6 +6,7 @@ const links = [
   { to: '/', label: 'الرئيسية' },
   { to: '/news', label: 'الأخبار' },
   { to: '/events', label: 'الأحداث' },
+  { to: '/library', label: 'المكتبة' },
   { to: '/about', label: 'عن الكلية' },
 ]
 
