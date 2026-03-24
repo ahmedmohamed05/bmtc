@@ -1,10 +1,21 @@
 import env from "../config/env";
 
+export interface BookDepartmentSafe {
+	id: number;
+	name: string;
+	name_ar: string | null;
+}
+
 export interface BookSafe {
 	id: number;
 	title: string;
 	author: string;
 	description: string;
+	major: string | null;
+	book_rank: number | null;
+	row_number: number | null;
+	print_date: number | null;
+	department: BookDepartmentSafe | null;
 	cover_url: string | null;
 	created_at: string;
 	updated_at: string;

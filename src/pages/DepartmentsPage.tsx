@@ -66,7 +66,7 @@ export default function DepartmentsPage() {
       d.descEn.toLowerCase().includes(q)
     )
   })
-
+//thelk sdfsf
   const statsBar = isAr
     ? [{ num: '٦', lbl: 'أقسام أكاديمية' }, { num: '+١٣٠٠', lbl: 'طالب وطالبة' }, { num: '+٨٠', lbl: 'عضو هيئة تدريس' }, { num: '+١٣٠٠', lbl: 'خريج' }]
     : [{ num: '6', lbl: 'Departments' }, { num: '1300+', lbl: 'Students' }, { num: '80+', lbl: 'Faculty Members' }, { num: '1300+', lbl: 'Graduates' }]

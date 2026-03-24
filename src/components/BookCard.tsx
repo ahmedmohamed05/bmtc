@@ -3,6 +3,13 @@ import { FaEye, FaBook } from 'react-icons/fa'
 import type { BookSafe } from '../api/library'
 
 export default function BookCard({ item }: { item: BookSafe }) {
+  const departmentName = item.department?.name_ar || item.department?.name
+  const metadata = [
+    item.print_date ? `سنة الطباعة ${item.print_date}` : null,
+    item.book_rank ? `الترتيب ${item.book_rank}` : null,
+    item.row_number ? `الرف ${item.row_number}` : null,
+  ].filter(Boolean) as string[]
+
   return (
     <Link
       to={`/library/${item.id}`}
@@ -33,7 +40,7 @@ export default function BookCard({ item }: { item: BookSafe }) {
       <div
         style={{
           position: 'relative',
-          paddingTop: '100%',
+          paddingTop: '135%',
           background: 'var(--blue-faint)',
           overflow: 'hidden',
         }}
@@ -71,6 +78,23 @@ export default function BookCard({ item }: { item: BookSafe }) {
       </div>
 
       <div style={{ padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+        {departmentName && (
+          <div
+            style={{
+              alignSelf: 'flex-start',
+              marginBottom: '0.75rem',
+              padding: '0.2rem 0.65rem',
+              borderRadius: 999,
+              background: 'rgba(116, 195, 226, 0.16)',
+              color: 'var(--blue-dark)',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+            }}
+          >
+            {departmentName}
+          </div>
+        )}
+
         <h3
           style={{
             margin: 0,
@@ -118,6 +142,47 @@ export default function BookCard({ item }: { item: BookSafe }) {
         >
           {item.description}
         </p>
+
+        {item.major && (
+          <p
+            style={{
+              margin: '0 0 0.75rem',
+              fontSize: '0.76rem',
+              color: 'var(--gold-dark)',
+              fontWeight: 700,
+            }}
+          >
+            {item.major}
+          </p>
+        )}
+
+        {metadata.length > 0 && (
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '0.4rem',
+              marginBottom: '0.85rem',
+            }}
+          >
+            {metadata.map((value) => (
+              <span
+                key={value}
+                style={{
+                  padding: '0.22rem 0.55rem',
+                  borderRadius: 999,
+                  background: '#f8fafc',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-muted)',
+                  fontSize: '0.7rem',
+                  fontWeight: 600,
+                }}
+              >
+                {value}
+              </span>
+            ))}
+          </div>
+        )}
 
         <div
           style={{

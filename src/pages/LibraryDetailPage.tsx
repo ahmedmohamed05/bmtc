@@ -5,15 +5,31 @@ import { useLibraryItem } from '../hooks/useLibraryItem'
 import { formatArabicDate } from '../utils/formatDate'
 import ShareButton from '../components/ShareButton'
 
+type MetadataEntry = {
+  label: string
+  value: string
+}
+
 export default function LibraryDetailPage() {
   const { id } = useParams<{ id: string }>()
   const parsedId = Number(id)
   const bookId = Number.isInteger(parsedId) && parsedId > 0 ? parsedId : null
   const { item, loading, error } = useLibraryItem(bookId)
+  const departmentName = item?.department?.name_ar || item?.department?.name || null
+
+  const metadata: MetadataEntry[] = item
+    ? [
+        item.major ? { label: 'التخصص', value: item.major } : null,
+        departmentName ? { label: 'القسم المرتبط', value: departmentName } : null,
+        item.print_date ? { label: 'سنة الطباعة', value: String(item.print_date) } : null,
+        item.book_rank ? { label: 'ترتيب الكتاب', value: String(item.book_rank) } : null,
+        item.row_number ? { label: 'رقم الرف', value: String(item.row_number) } : null,
+      ].filter((entry): entry is MetadataEntry => entry !== null)
+    : []
 
   return (
     <main style={{ flex: 1, background: 'var(--bg)', padding: '2rem 1.5rem' }}>
-      <div style={{ maxWidth: 780, margin: '0 auto' }}>
+      <div style={{ maxWidth: 900, margin: '0 auto' }}>
         <nav
           style={{
             display: 'flex',
@@ -22,6 +38,7 @@ export default function LibraryDetailPage() {
             fontSize: '0.8rem',
             color: 'var(--text-muted)',
             marginBottom: '1.25rem',
+            flexWrap: 'wrap',
           }}
         >
           <Link to='/' style={{ color: 'var(--blue)' }}>
@@ -50,9 +67,7 @@ export default function LibraryDetailPage() {
         </nav>
 
         {loading && <Loader />}
-        {error && (
-          <ErrorState message='تعذّر تحميل الكتاب. ربما تم حذفه أو لم يُعثر عليه.' />
-        )}
+        {error && <ErrorState message='تعذّر تحميل الكتاب. ربما تم حذفه أو لم يُعثر عليه.' />}
 
         {item && (
           <article
@@ -66,13 +81,13 @@ export default function LibraryDetailPage() {
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'minmax(200px, 280px) 1fr',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
                 gap: '2rem',
                 padding: '2rem',
+                alignItems: 'start',
               }}
             >
-              {/* Cover Image */}
-              <div>
+              <div style={{ width: '100%', maxWidth: 300 }}>
                 {item.cover_url ? (
                   <img
                     src={item.cover_url}
@@ -105,9 +120,26 @@ export default function LibraryDetailPage() {
                 )}
               </div>
 
-              {/* Content */}
               <div>
                 <div style={{ marginBottom: '1.5rem' }}>
+                  {departmentName && (
+                    <div
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        marginBottom: '0.85rem',
+                        padding: '0.28rem 0.8rem',
+                        borderRadius: 999,
+                        background: 'rgba(116, 195, 226, 0.16)',
+                        color: 'var(--blue-dark)',
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                      }}
+                    >
+                      {departmentName}
+                    </div>
+                  )}
+
                   <h1
                     style={{
                       margin: 0,
@@ -120,22 +152,36 @@ export default function LibraryDetailPage() {
                   >
                     {item.title}
                   </h1>
+
                   <p
                     style={{
-                      margin: 0,
+                      margin: '0 0 1rem',
                       fontSize: '1rem',
                       color: 'var(--text-muted)',
-                      marginBottom: '1rem',
                     }}
                   >
                     <span style={{ fontWeight: 600 }}>المؤلف:</span> {item.author}
                   </p>
+
+                  {item.major && (
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: '0.92rem',
+                        color: 'var(--gold-dark)',
+                        fontWeight: 700,
+                      }}
+                    >
+                      {item.major}
+                    </p>
+                  )}
                 </div>
 
                 <div
                   style={{
                     display: 'flex',
-                    gap: '2rem',
+                    flexWrap: 'wrap',
+                    gap: '1.25rem 2rem',
                     marginBottom: '1.5rem',
                     fontSize: '0.85rem',
                     color: 'var(--text-muted)',
@@ -153,13 +199,56 @@ export default function LibraryDetailPage() {
                   </div>
                 </div>
 
+                {metadata.length > 0 && (
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                      gap: '0.85rem',
+                      marginBottom: '1.5rem',
+                    }}
+                  >
+                    {metadata.map((entry) => (
+                      <div
+                        key={entry.label}
+                        style={{
+                          padding: '0.85rem 1rem',
+                          borderRadius: 10,
+                          background: '#f8fafc',
+                          border: '1px solid var(--border)',
+                        }}
+                      >
+                        <p
+                          style={{
+                            margin: '0 0 0.2rem',
+                            color: 'var(--text-muted)',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                          }}
+                        >
+                          {entry.label}
+                        </p>
+                        <p
+                          style={{
+                            margin: 0,
+                            color: 'var(--text)',
+                            fontSize: '0.95rem',
+                            fontWeight: 700,
+                          }}
+                        >
+                          {entry.value}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <div style={{ marginBottom: '1.5rem' }}>
                   <ShareButton title={item.title} text={item.description} />
                 </div>
               </div>
             </div>
 
-            {/* Description */}
             <div
               style={{
                 padding: '0 2rem 2rem',
