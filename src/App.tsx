@@ -8,6 +8,7 @@ import NewsDetailPage from './pages/NewsDetailPage'
 import AboutPage from './pages/AboutPage'
 import EventsPage from './pages/EventsPage'
 import EventDetailPage from './pages/EventDetailPage'
+import ChatPage from './pages/ChatPage'
 import './config/env'
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route path='/events' element={<EventsPage />} />
         <Route path='/events/:id' element={<EventDetailPage />} />
         <Route path='/about' element={<AboutPage />} />
+        <Route path='/chat' element={<ChatPage />} />
       </Routes>
       <Footer />
     </BrowserRouter>

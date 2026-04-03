@@ -7,6 +7,7 @@ const links = [
   { to: '/news', label: 'الأخبار' },
   { to: '/events', label: 'الأحداث' },
   { to: '/about', label: 'عن الكلية' },
+  { to: '/chat', label: 'الدردشة' },
 ]
 
 export default function Navbar() {
