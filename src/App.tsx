@@ -11,6 +11,7 @@ import EventDetailPage from './pages/EventDetailPage'
 import DepartmentsPage from './pages/DepartmentsPage'
 import LibraryPage from './pages/LibraryPage'
 import LibraryDetailPage from './pages/LibraryDetailPage'
+import StudentsPage from './pages/StudentsPage'
 import './config/env'
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path='/events/:id' element={<EventDetailPage />} />
         <Route path='/library' element={<LibraryPage />} />
         <Route path='/library/:id' element={<LibraryDetailPage />} />
+        <Route path='/students' element={<StudentsPage />} />
         <Route path='/about' element={<AboutPage />} />
         <Route path="/departments" element={<DepartmentsPage />} />
       </Routes>

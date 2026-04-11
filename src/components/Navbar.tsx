@@ -7,6 +7,7 @@ const links = [
   { to: '/news', label: 'الأخبار' },
   { to: '/events', label: 'الأحداث' },
   { to: '/library', label: 'المكتبة' },
+  { to: '/students', label: 'الطلاب' },
   { to: '/about', label: 'عن الكلية' },
 ]
 
