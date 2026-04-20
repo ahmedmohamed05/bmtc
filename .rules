@@ -1,0 +1,37 @@
+# Project Rules
+
+## Architecture
+This project follows a strict layered architecture. Always respect this flow:
+```
+API Services → Custom Hooks → Pages
+```
+
+Never skip layers. Pages must not call API services directly.
+
+## Layers
+
+### 1. API Services (`/services`)
+- Raw API calls only, no state management
+- Returns typed responses
+- Example: `DepartmentsService.getAll()`, `AdminService.updateRole()`
+
+### 2. Custom Hooks (`/hooks`)
+- Wraps service calls with `useState`, `useEffect`, `useContext`
+- Manages loading, error, and data state
+- Hooks can call other hooks
+- Example: `useDepartments()`, `useAdmins()`
+
+### 3. Pages (`/pages`)
+- Consumes hooks only, never services directly
+- Composes multiple hooks together
+- No direct API calls
+
+## Authentication
+- Single `AuthContext` holds the current authenticated admin state
+- Accessed via `useContext(AuthContext)` inside custom hooks or components
+- `currentAdmin` is the logged-in admin object from context
+
+## Conventions
+- All hooks return `{ data, loading, error }`
+- TypeScript strict mode — no `any`
+- Errors are handled inside hooks, not in pages
