@@ -1,43 +1,43 @@
-import { Link } from 'react-router-dom'
-import { FaEye, FaCalendarAlt } from 'react-icons/fa'
-import type { NewsSafe } from '../api/news'
-import { formatArabicDate } from '../utils/formatDate'
+import { Link } from "react-router-dom";
+import { FaEye, FaCalendarAlt } from "react-icons/fa";
+import type { NewsSafe } from "../api/news";
+import { formatArabicDate } from "../utils/formatDate";
 
 export default function NewsCard({ item }: { item: NewsSafe }) {
   return (
     <Link
       to={`/news/${item.id}`}
       style={{
-        display: 'flex',
-        flexDirection: 'column',
+        display: "flex",
+        flexDirection: "column",
         borderRadius: 12,
-        overflow: 'hidden',
-        background: 'var(--bg-card)',
-        border: 'none',
-        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+        overflow: "hidden",
+        background: "var(--bg-card)",
+        border: "none",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
         boxShadow:
-          '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)',
+          "0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)",
       }}
       onMouseEnter={(e) => {
-        const el = e.currentTarget as HTMLAnchorElement
-        el.style.transform = 'translateY(-6px)'
+        const el = e.currentTarget as HTMLAnchorElement;
+        el.style.transform = "translateY(-6px)";
         el.style.boxShadow =
-          '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)'
+          "0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)";
       }}
       onMouseLeave={(e) => {
-        const el = e.currentTarget as HTMLAnchorElement
-        el.style.transform = 'translateY(0)'
+        const el = e.currentTarget as HTMLAnchorElement;
+        el.style.transform = "translateY(0)";
         el.style.boxShadow =
-          '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)'
+          "0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)";
       }}
     >
       {/* Thumbnail */}
       <div
         style={{
-          position: 'relative',
-          paddingTop: '52%',
-          background: 'var(--blue-faint)',
-          overflow: 'hidden',
+          position: "relative",
+          paddingTop: "52%",
+          background: "var(--blue-faint)",
+          overflow: "hidden",
         }}
       >
         {item.thumbnail_url ? (
@@ -45,23 +45,23 @@ export default function NewsCard({ item }: { item: NewsSafe }) {
             src={item.thumbnail_url}
             alt={item.title}
             style={{
-              position: 'absolute',
+              position: "absolute",
               inset: 0,
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
             }}
           />
         ) : (
           <div
             style={{
-              position: 'absolute',
+              position: "absolute",
               inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--blue)',
-              fontSize: '2.5rem',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--blue)",
+              fontSize: "2.5rem",
               fontWeight: 800,
               opacity: 0.25,
             }}
@@ -74,11 +74,11 @@ export default function NewsCard({ item }: { item: NewsSafe }) {
       {/* Body */}
       <div
         style={{
-          padding: '1rem',
+          padding: "1rem",
           flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.5rem',
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.5rem",
         }}
       >
         {/* Gold accent line */}
@@ -86,22 +86,22 @@ export default function NewsCard({ item }: { item: NewsSafe }) {
           style={{
             height: 2,
             width: 32,
-            background: 'var(--gold)',
+            background: "var(--gold)",
             borderRadius: 1,
-            marginBottom: '0.25rem',
+            marginBottom: "0.25rem",
           }}
         />
 
         <h3
           style={{
             fontWeight: 700,
-            fontSize: '0.95rem',
+            fontSize: "0.95rem",
             lineHeight: 1.6,
-            color: 'var(--text)',
-            display: '-webkit-box',
+            color: "var(--text)",
+            display: "-webkit-box",
             WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
           {item.title}
@@ -109,14 +109,14 @@ export default function NewsCard({ item }: { item: NewsSafe }) {
 
         <p
           style={{
-            fontSize: '0.82rem',
-            color: 'var(--text-muted)',
+            fontSize: "0.82rem",
+            color: "var(--text-muted)",
             lineHeight: 1.8,
             flex: 1,
-            display: '-webkit-box',
+            display: "-webkit-box",
             WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
           {item.content}
@@ -124,39 +124,39 @@ export default function NewsCard({ item }: { item: NewsSafe }) {
 
         <div
           style={{
-            display: 'flex',
-            gap: '1rem',
-            marginTop: '0.25rem',
-            borderTop: '1px solid var(--border)',
-            paddingTop: '0.6rem',
+            display: "flex",
+            gap: "1rem",
+            marginTop: "0.25rem",
+            borderTop: "1px solid var(--border)",
+            paddingTop: "0.6rem",
           }}
         >
           <span
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.3rem',
-              fontSize: '0.75rem',
-              color: 'var(--text-muted)',
+              display: "flex",
+              alignItems: "center",
+              gap: "0.3rem",
+              fontSize: "0.75rem",
+              color: "var(--text-muted)",
             }}
           >
-            <FaCalendarAlt style={{ color: 'var(--blue)' }} />
+            <FaCalendarAlt style={{ color: "var(--blue)" }} />
             {formatArabicDate(item.created_at)}
           </span>
           <span
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.3rem',
-              fontSize: '0.75rem',
-              color: 'var(--text-muted)',
+              display: "flex",
+              alignItems: "center",
+              gap: "0.3rem",
+              fontSize: "0.75rem",
+              color: "var(--text-muted)",
             }}
           >
-            <FaEye style={{ color: 'var(--gold)' }} />
+            <FaEye style={{ color: "var(--gold)" }} />
             {item.views_counter}
           </span>
         </div>
       </div>
     </Link>
-  )
+  );
 }
