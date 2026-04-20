@@ -19,17 +19,12 @@ Never skip layers. Pages must not call API services directly.
 - Wraps service calls with `useState`, `useEffect`, `useContext`
 - Manages loading, error, and data state
 - Hooks can call other hooks
-- Example: `useDepartments()`, `useAdmins()`
+- Example: `useDepartments()`, `useNews()`
 
 ### 3. Pages (`/pages`)
 - Consumes hooks only, never services directly
 - Composes multiple hooks together
 - No direct API calls
-
-## Authentication
-- Single `AuthContext` holds the current authenticated admin state
-- Accessed via `useContext(AuthContext)` inside custom hooks or components
-- `currentAdmin` is the logged-in admin object from context
 
 ## Conventions
 - All hooks return `{ data, loading, error }`
