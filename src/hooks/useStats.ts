@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { fetchDepartmentsCount, type DepartmentCounts } from "../services/departments";
-import { fetchEventsCount, type EventsCount } from "../services/events.services";
-import { fetchNewsCount } from "../services/news.services";
+import DepartmentsServices from "../services/departments.services";
+import type { DepartmentCountResponse } from "../types/departments.types";
+import EventsServices from "../services/events.services";
+import type { EventCountResponse } from "../types/events.types";
+import NewsServices from "../services/news.services";
 import { fetchLibraryCount } from "../services/library";
 
 export interface AppStats {
-  departments: DepartmentCounts | null;
-  events: EventsCount | null;
+  departments: DepartmentCountResponse | null;
+  events: EventCountResponse | null;
   newsTotal: number | null;
   booksTotal: number | null;
 }
@@ -31,19 +33,19 @@ export function useStats() {
 
         // Fetching actual count endpoints
         const [deptRes, eventsRes, newsRes, libRes] = await Promise.allSettled([
-          fetchDepartmentsCount(),
-          fetchEventsCount(),
-          fetchNewsCount(),
+          DepartmentsServices.getDepartmentsCount(),
+          EventsServices.getEventsCount(),
+          NewsServices.getNewsCount(),
           fetchLibraryCount(),
         ]);
 
         if (!isMounted) return;
 
         setStats({
-          departments: deptRes.status === "fulfilled" ? deptRes.value : null,
-          events: eventsRes.status === "fulfilled" ? eventsRes.value : null,
-          newsTotal: newsRes.status === "fulfilled" ? newsRes.value.count : null,
-          booksTotal: libRes.status === "fulfilled" ? libRes.value.count : null,
+          departments: deptRes.status === "fulfilled" && deptRes.value.kind === "success" ? deptRes.value.data : null,
+          events: eventsRes.status === "fulfilled" && eventsRes.value.kind === "success" ? eventsRes.value.data : null,
+          newsTotal: newsRes.status === "fulfilled" && newsRes.value.kind === "success" ? newsRes.value.data?.count ?? null : null,
+          booksTotal: libRes.status === "fulfilled" && 'count' in libRes.value ? libRes.value.count : null,
         });
       } catch (err: any) {
         if (isMounted) setError(err.message || "فشل في تحميل الإحصائيات");
