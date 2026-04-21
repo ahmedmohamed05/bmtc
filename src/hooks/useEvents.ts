@@ -1,70 +1,99 @@
-import { useState, useEffect, useCallback } from "react";
-import { fetchEventsList, type EventSafe } from "../api/events";
+import { useCallback, useMemo, useRef, useState } from "react";
+import type { Event } from "../types/events.types";
+import EventsServices from "../services/events.services";
 
-const LIMIT = 6;
+function getArabicErrorMessage(message: string): string {
+  if (!message || typeof message !== "string") return "حدث خطأ غير معروف";
+  const lowerMsg = message.toLowerCase();
 
-interface UseEventsState {
-  events: EventSafe[];
-  loading: boolean;
-  loadingMore: boolean;
-  error: string | null;
-  hasMore: boolean;
-  total: number;
-  loadMore: () => void;
+  if (lowerMsg.includes("too many requests to get event")) {
+    return "لقد تجاوزت الحد المسموح به لجلب بيانات الحدث. يرجى المحاولة لاحقاً.";
+  }
+  if (lowerMsg.includes("too many requests to count events")) {
+    return "لقد تجاوزت الحد المسموح به. يرجى المحاولة لاحقاً.";
+  }
+  if (lowerMsg.includes("too many requests to list events")) {
+    return "لقد تجاوزت الحد المسموح به لجلب قائمة الأحداث. يرجى المحاولة لاحقاً.";
+  }
+  if (
+    lowerMsg.includes("event not found") ||
+    lowerMsg.includes("no event found with this id")
+  ) {
+    return "لم يتم العثور على الحدث المطلوب.";
+  }
+
+  return message;
 }
 
-/**
- * Fetches public events incrementally for the listing page.
- */
-export function useEvents(): UseEventsState {
-  const [events, setEvents] = useState<EventSafe[]>([]);
+export default function useEvents() {
+  const [events, setEvents] = useState<Event[]>([]);
   const [offset, setOffset] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const loadingRef = useRef(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const limit = 10;
 
-  useEffect(() => {
-    let cancelled = false;
-
-    fetchEventsList(LIMIT, 0)
-      .then((data) => {
-        if (cancelled) return;
-        setEvents(data.events);
-        setHasMore(data.hasMore);
-        setTotal(data.totalEventsLength);
-        setOffset(data.events.length);
-      })
-      .catch((err: Error) => {
-        if (!cancelled) setError(err.message);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
+  const startOperation = useCallback(() => {
+    loadingRef.current = true;
+    setLoading(true);
+    setError(null);
+  }, []);
+  const endOperation = useCallback((err: string | null = null) => {
+    loadingRef.current = false;
+    setLoading(false);
+    setError(err);
   }, []);
 
-  /**
-   * Requests the next page and appends it to the current list.
-   */
-  const loadMore = useCallback(() => {
-    if (loadingMore || !hasMore) return;
-    setLoadingMore(true);
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
 
-    fetchEventsList(LIMIT, offset)
-      .then((data) => {
-        setEvents((prev) => [...prev, ...data.events]);
-        setHasMore(data.hasMore);
-        setTotal(data.totalEventsLength);
-        setOffset((prev) => prev + data.events.length);
-      })
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setLoadingMore(false));
-  }, [hasMore, loadingMore, offset]);
+  const fetchMore = useCallback(async () => {
+    if (loadingRef.current) return;
+    if (!hasMore) return;
 
-  return { events, loading, loadingMore, error, hasMore, total, loadMore };
+    startOperation();
+
+    const res = await EventsServices.getEvents({ limit, offset });
+
+    if (res.kind !== "success") {
+      endOperation(getArabicErrorMessage(res.message));
+      return;
+    }
+
+    if (!res.data) {
+      endOperation("حدث خطأ أثناء تحميل الأحداث");
+      return;
+    }
+
+    setHasMore(Boolean(res.data.hasMore));
+    setEvents((prev) => [...prev, ...(res.data!.events || [])]);
+    setOffset(res.data.offset + res.data.limit);
+    endOperation();
+  }, [loading, hasMore, offset]);
+
+  const getEventsCount = useCallback(async () => {
+    startOperation();
+    const res = await EventsServices.getEventsCount();
+    if (res.kind !== "success") {
+      endOperation(getArabicErrorMessage(res.message));
+      return;
+    }
+    endOperation();
+    return res.data!.total ?? res.data!.total;
+  }, []);
+
+  return useMemo(
+    () => ({
+      events,
+      fetchMore,
+      hasMore,
+      loading,
+      error,
+      getEventsCount,
+      clearError,
+    }),
+    [events, fetchMore, hasMore, loading, error, getEventsCount, clearError]
+  );
 }
