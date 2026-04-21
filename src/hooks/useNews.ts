@@ -1,62 +1,95 @@
-import { useState, useEffect, useCallback } from "react";
-import { fetchNewsList, type NewsSafe } from "../api/news";
+import { useCallback, useRef, useState } from "react";
+import NewsServices from "../services/news.services";
+import type { News } from "../types/news.types";
 
-const LIMIT = 6;
+function getArabicErrorMessage(message: string): string {
+  if (!message || typeof message !== "string") return "حدث خطأ غير معروف";
+  const lowerMsg = message.toLowerCase();
 
-interface UseNewsState {
-  news: NewsSafe[];
-  loading: boolean;
-  loadingMore: boolean;
-  error: string | null;
-  hasMore: boolean;
-  total: number;
-  loadMore: () => void;
+  if (lowerMsg.includes("too many requests to list news")) {
+    return "لقد تجاوزت الحد المسموح به لجلب قائمة الأخبار. يرجى المحاولة لاحقاً.";
+  }
+  if (lowerMsg.includes("too many requests to get news count")) {
+    return "لقد تجاوزت الحد المسموح به. يرجى المحاولة لاحقاً.";
+  }
+  if (lowerMsg.includes("too many requests to get news by id")) {
+    return "لقد تجاوزت الحد المسموح به لجلب بيانات الخبر. يرجى المحاولة لاحقاً.";
+  }
+  if (lowerMsg.includes("news not found") || lowerMsg.includes("record not found")) {
+    return "لم يتم العثور على الخبر المطلوب.";
+  }
+
+  return message;
 }
 
-export function useNews(): UseNewsState {
-  const [news, setNews] = useState<NewsSafe[]>([]);
+export default function useNews() {
+  const [news, setNews] = useState<News[]>([]);
   const [offset, setOffset] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const loadingRef = useRef(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const limit = 10;
 
-  useEffect(() => {
-    let cancelled = false;
-
-    fetchNewsList(LIMIT, 0)
-      .then((data) => {
-        if (cancelled) return;
-        setNews(data.news);
-        setHasMore(data.hasMore);
-        setTotal(data.totalNewsLength);
-        setOffset(data.news.length);
-      })
-      .catch((err: Error) => {
-        if (!cancelled) setError(err.message);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
+  const startOperation = useCallback(() => {
+    loadingRef.current = true;
+    setLoading(true);
+    setError(null);
   }, []);
 
-  const loadMore = useCallback(() => {
-    if (loadingMore || !hasMore) return;
-    setLoadingMore(true);
-    fetchNewsList(LIMIT, offset)
-      .then((data) => {
-        setNews((prev) => [...prev, ...data.news]);
-        setHasMore(data.hasMore);
-        setTotal(data.totalNewsLength);
-        setOffset((prev) => prev + data.news.length);
-      })
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setLoadingMore(false));
-  }, [loadingMore, hasMore, offset]);
+  const endOperation = useCallback((err: string | null = null) => {
+    loadingRef.current = false;
+    setLoading(false);
+    setError(err);
+  }, []);
 
-  return { news, loading, loadingMore, error, hasMore, total, loadMore };
+  const clearError = useCallback(() => {
+    setError(null);
+  }, [])
+
+  const fetchMore = useCallback(async () => {
+    if (loadingRef.current) return;
+    if (!hasMore) return;
+
+    startOperation();
+
+    const res = await NewsServices.getNews({ limit, offset });
+
+    if (res.kind !== "success") {
+      endOperation(getArabicErrorMessage(res.message));
+      return;
+    }
+
+    if (!res.data) {
+      endOperation("حدث خطأ أثناء تحميل الأخبار");
+      return;
+    }
+
+    setHasMore(res.data.hasMore);
+
+    setNews([...news, ...res.data.news]);
+    setOffset(res.data.offset + res.data.limit);
+    endOperation();
+  }, [news, offset, hasMore, startOperation, endOperation]);
+
+  const getNewsCount = useCallback(async () => {
+    startOperation();
+    const res = await NewsServices.getNewsCount();
+    if (res.kind !== "success") {
+      endOperation(getArabicErrorMessage(res.message));
+      return;
+    }
+    endOperation();
+    return res.data!.count;
+  }, [startOperation, endOperation]);
+
+  return {
+    news,
+    fetchMore,
+    hasMore,
+    loading,
+    error,
+    getNewsCount,
+    clearError,
+  };
 }
