@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import NewsServices from "../services/news.services";
-import type { News } from "../types/news.types";
+import type { News, TopViewedNews } from "../types/news.types";
 
 function getArabicErrorMessage(message: string): string {
   if (!message || typeof message !== "string") return "حدث خطأ غير معروف";
@@ -24,6 +24,7 @@ function getArabicErrorMessage(message: string): string {
 
 export default function useNews() {
   const [news, setNews] = useState<News[]>([]);
+  const [topViewedNews, setTopViewedNews] = useState<TopViewedNews[]>([]);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const loadingRef = useRef(false);
@@ -83,6 +84,21 @@ export default function useNews() {
     return res.data!.count;
   }, [startOperation, endOperation]);
 
+  const fetchTopViewed = useCallback(async () => {
+    startOperation();
+    const res = await NewsServices.getTopViewedNews();
+    if (res.kind !== "success") {
+      endOperation(getArabicErrorMessage(res.message));
+      return;
+    }
+    if (!res.data) {
+      endOperation("حدث خطأ أثناء تحميل الأخبار الأكثر مشاهدة");
+      return;
+    }
+    setTopViewedNews(res.data.topViews);
+    endOperation();
+  }, [startOperation, endOperation]);
+
   return {
     news,
     fetchMore,
@@ -91,5 +107,7 @@ export default function useNews() {
     error,
     getNewsCount,
     clearError,
+    topViewedNews,
+    fetchTopViewed,
   };
 }
