@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchLibraryList, type BookSafe } from "../api/library";
+import { fetchLibraryList, type BookSafe } from "../services/library";
 
 const LIMIT = 6;
 
