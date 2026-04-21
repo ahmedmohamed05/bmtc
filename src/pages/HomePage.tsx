@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { useNews } from "../hooks/useNews";
+import { useStats } from "../hooks/useStats";
 import NewsCard from "../components/NewsCard";
 import { Loader, ErrorState } from "../components/Loader";
 
 export default function HomePage() {
   const { news, loading, loadingMore, error, hasMore, loadMore } = useNews();
+  const { stats, loading: statsLoading } = useStats();
 
   return (
     <main style={{ flex: 1 }}>
@@ -320,6 +322,114 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Statistics section */}
+      <section style={{ padding: "4rem 1.5rem", background: "var(--blue-faint, #f4f8fb)" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+            <h2
+              style={{
+                fontSize: "clamp(1.3rem, 3vw, 1.7rem)",
+                fontWeight: 800,
+                color: "var(--blue)",
+                letterSpacing: "0.5px",
+              }}
+            >
+              إحصائيات الكلية
+            </h2>
+            <div
+              style={{
+                height: 4,
+                width: 60,
+                background: "linear-gradient(90deg, var(--blue), var(--gold))",
+                borderRadius: 2,
+                margin: "0.75rem auto 0.75rem",
+              }}
+            />
+          </div>
+
+          {statsLoading ? (
+            <Loader />
+          ) : (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                gap: "1.5rem",
+              }}
+            >
+              {[
+                { label: "الأقسام", value: stats.departments?.total?.total || 0, icon: "🏢", hue: "205deg" },
+                { label: "النشاطات والفعاليات", value: stats.events?.total || 0, icon: "📅", hue: "185deg" },
+                { label: "الأخبار", value: stats.newsTotal || 0, icon: "📰", hue: "195deg" },
+                { label: "الكتب والمراجع", value: stats.booksTotal || 0, icon: "📚", hue: "215deg" },
+              ].map((stat, i) => (
+                <div
+                  key={i}
+                  style={{
+                    background: "#fff",
+                    borderRadius: 16,
+                    padding: "2rem 1.5rem",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "1rem",
+                    boxShadow: "0 10px 30px -10px rgba(0,0,0,0.08)",
+                    border: "1px solid rgba(0,0,0,0.04)",
+                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                    cursor: "default",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-5px)";
+                    e.currentTarget.style.boxShadow = "0 20px 40px -15px rgba(0,0,0,0.12)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 10px 30px -10px rgba(0,0,0,0.08)";
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 64,
+                      height: 64,
+                      borderRadius: "50%",
+                      background: `hsl(${stat.hue} 70% 95%)`,
+                      color: `hsl(${stat.hue} 70% 40%)`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "2rem",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    {stat.icon}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "2.5rem",
+                      fontWeight: 900,
+                      color: "var(--blue)",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {stat.value}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "1.05rem",
+                      fontWeight: 600,
+                      color: "var(--text-muted)",
+                      textAlign: "center",
+                    }}
+                  >
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

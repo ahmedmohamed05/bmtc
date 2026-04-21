@@ -30,3 +30,8 @@ Never skip layers. Pages must not call API services directly.
 - All hooks return `{ data, loading, error }`
 - TypeScript strict mode — no `any`
 - Errors are handled inside hooks, not in pages
+
+## Important
+- Each page or backend route should have his own types file inside the `/types` directory
+- Each backend route should have his own service file inside the `/services` directory
+- Each backend service should have his own hook inside the `/hooks` directory

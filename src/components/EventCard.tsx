@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FaEye, FaCalendarAlt, FaImages } from "react-icons/fa";
-import type { EventSafe } from "../api/events";
+import type { EventSafe } from "../services/events.services";
 import { formatArabicDate } from "../utils/formatDate";
 import { getPrimaryEventImage, getEventImageUrls } from "../utils/eventImages";
 

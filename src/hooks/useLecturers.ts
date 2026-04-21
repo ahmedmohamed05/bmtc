@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { LecturerWithDepartment } from "../types/lecturers.types";
 import LecturerServices from "../services/lecturers.services";
 

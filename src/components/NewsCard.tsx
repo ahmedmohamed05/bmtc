@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FaEye, FaCalendarAlt } from "react-icons/fa";
-import type { NewsSafe } from "../api/news";
+import type { NewsSafe } from "../services/news.services";
 import { formatArabicDate } from "../utils/formatDate";
 
 export default function NewsCard({ item }: { item: NewsSafe }) {

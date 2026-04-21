@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FaEye, FaBook } from "react-icons/fa";
-import type { BookSafe } from "../api/library";
+import type { BookSafe } from "../services/library";
 
 export default function BookCard({ item }: { item: BookSafe }) {
   const departmentName = item.department?.name_ar || item.department?.name;
